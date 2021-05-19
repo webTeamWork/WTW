@@ -1,7 +1,7 @@
 package main
 
-import "fmt"
+import "forum/src/router"
 
 func main() {
-	fmt.Print("hello world")
+	router.RunAPP()
 }
