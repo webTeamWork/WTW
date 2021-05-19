@@ -6,11 +6,11 @@ const (
 )
 
 type User struct {
-	UserID     int
-	Email      string
-	Password   string
-	Nickname   string
-	Avatar     string
-	UserType   int8
-	CreateTime int
+	UserID     int    `db:"user_id"`
+	Email      string `db:"email"`
+	Password   string `db:"password"`
+	Nickname   string `db:"nickname"`
+	Avatar     string `db:"avatar"`
+	UserType   int8   `db:"user_type"`
+	CreateTime int    `db:"create_time"`
 }

@@ -22,9 +22,9 @@ func RunAPP() {
 
 		user := api.Group("/user", middleware.UserAuth)
 		{
-			user.GET("/detail")     //用户详情
-			user.PATCH("/nickname") //改用户昵称
-			user.PATCH("/password") //改用户密码
+			user.GET("/detail", controller.UserDetail) //用户详情
+			user.PATCH("/nickname")                    //改用户昵称
+			user.PATCH("/password")                    //改用户密码
 
 			topic := user.Group("/topic")
 			{

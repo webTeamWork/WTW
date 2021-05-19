@@ -42,3 +42,20 @@ func Login(c *gin.Context) {
 		"token": token,
 	}, "登录成功")
 }
+
+func UserDetail(c *gin.Context) {
+	userID := c.GetInt("UserID")
+
+	detail, err := service.UserDetail(userID)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{
+		"email":       detail.Email,
+		"nickname":    detail.Nickname,
+		"avatar":      detail.Avatar,
+		"create_time": detail.CreateTime,
+	}, "获取用户详情成功")
+}

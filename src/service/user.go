@@ -39,3 +39,12 @@ func Login(req *request.Login) (string, error) {
 
 	return jwt.NewJWT(&jwt.CustomClaims{UserID: userID})
 }
+
+func UserDetail(userID int) (*model.User, error) {
+	detail := model.User{}
+	err := model.DB.Get(&detail, "SELECT email, nickname, avatar, create_time FROM user WHERE user_id = ?", userID)
+	if err != nil {
+		return nil, fmt.Errorf("用户不存在")
+	}
+	return &detail, nil
+}
