@@ -2,6 +2,7 @@ package router
 
 import (
 	"forum/src/controller"
+	"forum/src/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +20,7 @@ func RunAPP() {
 		api.GET("/topic/:topic_id/detail")         //帖子详情
 		api.GET("/topic/:topic_id/comment/list")   //帖子回复列表
 
-		user := api.Group("/user")
+		user := api.Group("/user", middleware.UserAuth)
 		{
 			user.GET("/detail")     //用户详情
 			user.PATCH("/nickname") //改用户昵称

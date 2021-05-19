@@ -16,6 +16,7 @@ func Register(req *request.Register) error {
 	}
 
 	tx, _ := model.DB.Beginx()
+	// TODO 头像
 	_, _ = tx.Exec("INSERT INTO user(email, password, nickname, avatar, user_type, create_time) VALUES(?, ?, ?, ?, ?, ?)",
 		req.Email, req.Password, req.Nickname, "", model.UserTypeUser, time.Now().Unix(),
 	)
