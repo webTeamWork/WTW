@@ -1,14 +1,18 @@
 package router
 
-import "github.com/gin-gonic/gin"
+import (
+	"forum/src/controller"
+
+	"github.com/gin-gonic/gin"
+)
 
 func RunAPP() {
 	r := gin.Default()
 
 	api := r.Group("/api/v1")
 	{
-		api.POST("/register")                      //注册
-		api.GET("/login")                          //登录
+		api.POST("/register", controller.Register) //注册
+		api.POST("/login", controller.Login)       //登录
 		api.GET("/section/list")                   //所有板块
 		api.GET("/section/:section_id/topic/list") //板块页帖子列表
 		api.GET("/search")                         //搜索

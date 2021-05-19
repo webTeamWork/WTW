@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"forum/src/model"
 	"forum/src/model/request"
+	"forum/src/utils/jwt"
 	"time"
 )
 
@@ -26,4 +27,14 @@ func Register(req *request.Register) error {
 		return fmt.Errorf("注册失败")
 	}
 	return nil
+}
+
+func Login(req *request.Login) (string, error) {
+	var userID int
+	err := model.DB.Get(&userID, "SELECT user_id FROM user WHERE email = ? and password = ?", req.Email, req.Password)
+	if err != nil {
+		return "", fmt.Errorf("邮箱不存在或密码不正确")
+	}
+
+	return jwt.NewJWT(&jwt.CustomClaims{UserID: userID})
 }

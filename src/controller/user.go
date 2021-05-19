@@ -25,5 +25,20 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
+	d := &request.Login{}
+	err := c.ShouldBindJSON(d)
+	if err != nil {
+		apiInputErr(c)
+		return
+	}
 
+	token, err := service.Login(d)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{
+		"token": token,
+	}, "登录成功")
 }
