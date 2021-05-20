@@ -40,7 +40,7 @@ func Login(c *gin.Context) {
 }
 
 func GetUserDetail(c *gin.Context) {
-	userID := c.GetInt("UserID")
+	userID := getUserID(c)
 
 	detail, err := service.UserDetail(userID)
 	if err != nil {
@@ -62,7 +62,7 @@ func ChangeUserNickname(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetInt("UserID")
+	userID := getUserID(c)
 	err := service.ChangeUserNickname(userID, d.Nickname)
 	if err != nil {
 		apiErr(c, err.Error())
@@ -78,7 +78,7 @@ func ChangeUserPassword(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetInt("UserID")
+	userID := getUserID(c)
 	err := service.ChangeUserPassword(userID, d.Old, d.New)
 	if err != nil {
 		apiErr(c, err.Error())

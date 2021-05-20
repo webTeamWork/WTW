@@ -39,3 +39,7 @@ func bindRequest(c *gin.Context, dst interface{}) error {
 	}
 	return nil
 }
+
+func getUserID(c *gin.Context) int {
+	return c.GetInt("UserID")
+}

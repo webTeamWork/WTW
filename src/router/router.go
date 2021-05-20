@@ -28,7 +28,7 @@ func RunAPP() {
 
 			topic := user.Group("/topic")
 			{
-				topic.POST("/")                           //发帖
+				topic.POST("/", controller.PostTopic)     //发帖
 				topic.POST("/:topic_id/comment")          //回帖
 				topic.GET("/:topic_id/record")            //用户某一帖子记录
 				topic.PUT("/:topic_id/thumb")             //点赞贴子
