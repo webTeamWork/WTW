@@ -28,16 +28,16 @@ func RunAPP() {
 
 			topic := user.Group("/topic")
 			{
-				topic.POST("/", controller.PostTopic)     //发帖
-				topic.POST("/:topic_id/comment")          //回帖
-				topic.GET("/:topic_id/record")            //用户某一帖子记录
-				topic.PUT("/:topic_id/thumb")             //点赞贴子
-				topic.DELETE("/:topic_id/thumb")          //取消点赞
-				topic.PUT("/:topic_id/favor")             //收藏贴子
-				topic.DELETE("/:topic_id/favor")          //取消收藏
-				topic.POST("/:topic_id/tipoff")           //举报帖子
-				topic.POST("/:topic_id")                  //举报回帖
-				topic.POST("/comment/:comment_id/tipoff") //用户发布的贴子列表
+				topic.POST("/", controller.PostTopic)                //发帖
+				topic.POST("/:topic_id/comment")                     //回帖
+				topic.GET("/:topic_id/record")                       //用户某一帖子记录
+				topic.PUT("/:topic_id/thumb", controller.ThumbTopic) //点赞贴子
+				topic.DELETE("/:topic_id/thumb")                     //取消点赞
+				topic.PUT("/:topic_id/favor", controller.FavorTopic) //收藏贴子
+				topic.DELETE("/:topic_id/favor")                     //取消收藏
+				topic.POST("/:topic_id/tipoff")                      //举报帖子
+				topic.POST("/:topic_id")                             //举报回帖
+				topic.POST("/comment/:comment_id/tipoff")            //用户发布的贴子列表
 
 				topic.GET("/list")         //删自己的帖
 				topic.DELETE("/:topic_id") //浏览历史

@@ -44,3 +44,17 @@ type Section struct {
 	Name       string `db:"name"`
 	TopicCount int    `db:"topic_count"`
 }
+
+const (
+	RecordTypeView  int8 = 1
+	RecordTypeThumb int8 = 2
+	RecordTypeFavor int8 = 3
+)
+
+type Record struct {
+	RecordID   int  `db:"record_id"`
+	UserID     int  `db:"user_id"`
+	RecordType int8 `db:"record_type"`
+	TopicID    int  `db:"topic_id"`
+	RecordTime int  `db:"record_time"`
+}

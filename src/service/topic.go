@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"fmt"
 	"forum/src/model"
 	"forum/src/model/request"
@@ -56,4 +57,50 @@ func PostTopic(userID int, req *request.PostTopic) error {
 		return fmt.Errorf("发布帖子失败")
 	}
 	return nil
+}
+
+func record(userID, topicID int, recordType int8) error {
+	// 获取之前的记录，点赞、收藏不允许重复执行
+	r := model.Record{}
+	err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, recordType)
+	if err == nil {
+		if recordType == model.RecordTypeThumb || recordType == model.RecordTypeFavor {
+			return fmt.Errorf("已经记录过")
+		}
+	} else if err != sql.ErrNoRows {
+		return fmt.Errorf("数据库查询错误")
+	}
+
+	// 记录到数据库，或修改浏览时间
+	tx, _ := model.DB.Beginx()
+	now := int(time.Now().Unix())
+	if recordType == model.RecordTypeView {
+		_, err = tx.Exec("UPDATE record SET record_time = ? WHERE record_id = ?", now, r.RecordID)
+	} else {
+		_, err = tx.NamedExec("INSERT INTO record(user_id, record_type, topic_id, record_time) VALUES(:user_id, :record_type, :topic_id, :record_time)",
+			model.Record{
+				UserID:     userID,
+				RecordType: recordType,
+				TopicID:    topicID,
+				RecordTime: now,
+			},
+		)
+	}
+	if err != nil {
+		return fmt.Errorf("记录失败")
+	}
+
+	if err = tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("记录失败")
+	}
+	return nil
+}
+
+func ThumbTopic(userID, topicID int) error {
+	return record(userID, topicID, model.RecordTypeThumb)
+}
+
+func FavorTopic(userID, topicID int) error {
+	return record(userID, topicID, model.RecordTypeFavor)
 }
