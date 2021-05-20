@@ -69,5 +69,21 @@ func ChangeUserNickname(c *gin.Context) {
 		return
 	}
 
-	apiOK(c, gin.H{}, "修改成功")
+	apiOK(c, gin.H{}, "修改昵称成功")
+}
+
+func ChangeUserPassword(c *gin.Context) {
+	d := &request.ChangeUserPassword{}
+	if err := bindRequest(c, &d); err != nil {
+		return
+	}
+
+	userID := c.GetInt("UserID")
+	err := service.ChangeUserPassword(userID, d.Old, d.New)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{}, "修改密码成功")
 }

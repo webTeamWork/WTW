@@ -24,7 +24,7 @@ func RunAPP() {
 		{
 			user.GET("/detail", controller.GetUserDetail)          //用户详情
 			user.PATCH("/nickname", controller.ChangeUserNickname) //改用户昵称
-			user.PATCH("/password")                                //改用户密码
+			user.PATCH("/password", controller.ChangeUserPassword) //改用户密码
 
 			topic := user.Group("/topic")
 			{

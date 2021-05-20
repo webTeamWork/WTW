@@ -69,3 +69,22 @@ func ChangeUserNickname(userID int, newName string) error {
 	}
 	return nil
 }
+
+func ChangeUserPassword(userID int, old, new string) error {
+	detail, err := getUser(userID)
+	if err != nil {
+		return err
+	}
+
+	if detail.Password != old {
+		return fmt.Errorf("原密码错误")
+	}
+
+	tx, _ := model.DB.Beginx()
+	_, _ = tx.Exec("UPDATE user SET password = ? WHERE user_id = ?", new, detail.UserID)
+	if err = tx.Commit(); err != nil {
+		tx.Rollback()
+		return fmt.Errorf("修改用户密码失败")
+	}
+	return nil
+}

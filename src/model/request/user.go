@@ -14,3 +14,8 @@ type Login struct {
 type ChangeUserNickname struct {
 	Nickname string `json:"nickname" binding:"required"`
 }
+
+type ChangeUserPassword struct {
+	Old string `json:"old" binding:"required"`
+	New string `json:"new" binding:"required"`
+}
