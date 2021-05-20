@@ -104,3 +104,37 @@ func ThumbTopic(userID, topicID int) error {
 func FavorTopic(userID, topicID int) error {
 	return record(userID, topicID, model.RecordTypeFavor)
 }
+
+func UnRecord(userID, topicID int, recordType int8) error {
+	// 获取之前的记录
+	r := model.Record{}
+	err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, recordType)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return fmt.Errorf("记录不存在")
+		} else {
+			return fmt.Errorf("数据库查询错误")
+		}
+	}
+
+	// 删除记录
+	tx, _ := model.DB.Beginx()
+	_, err = tx.Exec("DELETE FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, recordType)
+	if err != nil {
+		return fmt.Errorf("删除记录失败")
+	}
+
+	if err = tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("删除记录失败")
+	}
+	return nil
+}
+
+func CancelThumbTopic(userID, topicID int) error {
+	return UnRecord(userID, topicID, model.RecordTypeThumb)
+}
+
+func CancelFavorTopic(userID, topicID int) error {
+	return UnRecord(userID, topicID, model.RecordTypeFavor)
+}

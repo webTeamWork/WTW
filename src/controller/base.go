@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,4 +43,13 @@ func bindRequest(c *gin.Context, dst interface{}) error {
 
 func getUserID(c *gin.Context) int {
 	return c.GetInt("UserID")
+}
+
+func getTopicID(c *gin.Context) (int, bool) {
+	topicID, err := strconv.Atoi(c.Param("topic_id"))
+	if err != nil {
+		apiErr(c, "接口错误，无法获取帖子ID")
+		return 0, false
+	}
+	return topicID, true
 }
