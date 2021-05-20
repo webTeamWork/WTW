@@ -30,3 +30,12 @@ func apiOK(c *gin.Context, data gin.H, msg string) {
 	})
 	c.Abort()
 }
+
+func bindRequest(c *gin.Context, dst interface{}) error {
+	err := c.ShouldBindJSON(dst)
+	if err != nil {
+		apiInputErr(c)
+		return err
+	}
+	return nil
+}

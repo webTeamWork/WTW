@@ -9,13 +9,11 @@ import (
 
 func Register(c *gin.Context) {
 	d := &request.Register{}
-	err := c.ShouldBindJSON(d)
-	if err != nil {
-		apiInputErr(c)
+	if err := bindRequest(c, &d); err != nil {
 		return
 	}
 
-	err = service.Register(d)
+	err := service.Register(d)
 	if err != nil {
 		apiErr(c, err.Error())
 		return
@@ -26,9 +24,7 @@ func Register(c *gin.Context) {
 
 func Login(c *gin.Context) {
 	d := &request.Login{}
-	err := c.ShouldBindJSON(d)
-	if err != nil {
-		apiInputErr(c)
+	if err := bindRequest(c, &d); err != nil {
 		return
 	}
 
@@ -43,7 +39,7 @@ func Login(c *gin.Context) {
 	}, "登录成功")
 }
 
-func UserDetail(c *gin.Context) {
+func GetUserDetail(c *gin.Context) {
 	userID := c.GetInt("UserID")
 
 	detail, err := service.UserDetail(userID)
@@ -58,4 +54,20 @@ func UserDetail(c *gin.Context) {
 		"avatar":      detail.Avatar,
 		"create_time": detail.CreateTime,
 	}, "获取用户详情成功")
+}
+
+func ChangeUserNickname(c *gin.Context) {
+	d := &request.ChangeUserNickname{}
+	if err := bindRequest(c, &d); err != nil {
+		return
+	}
+
+	userID := c.GetInt("UserID")
+	err := service.ChangeUserNickname(userID, d.Nickname)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{}, "修改成功")
 }

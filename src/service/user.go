@@ -40,11 +40,32 @@ func Login(req *request.Login) (string, error) {
 	return jwt.NewJWT(&jwt.CustomClaims{UserID: userID})
 }
 
-func UserDetail(userID int) (*model.User, error) {
+// 获取用户model
+func getUser(userID int) (*model.User, error) {
 	detail := model.User{}
-	err := model.DB.Get(&detail, "SELECT email, nickname, avatar, create_time FROM user WHERE user_id = ?", userID)
+	err := model.DB.Get(&detail, "SELECT * FROM user WHERE user_id = ?", userID)
 	if err != nil {
 		return nil, fmt.Errorf("用户不存在")
 	}
 	return &detail, nil
+}
+
+func UserDetail(userID int) (*model.User, error) {
+	detail, err := getUser(userID)
+	return detail, err
+}
+
+func ChangeUserNickname(userID int, newName string) error {
+	detail, err := getUser(userID)
+	if err != nil {
+		return err
+	}
+
+	tx, _ := model.DB.Beginx()
+	_, _ = tx.Exec("UPDATE user SET nickname = ? WHERE user_id = ?", newName, detail.UserID)
+	if err = tx.Commit(); err != nil {
+		tx.Rollback()
+		return fmt.Errorf("修改用户昵称失败")
+	}
+	return nil
 }
