@@ -13,3 +13,12 @@ func getSection(sectionID int) (*model.Section, error) {
 	}
 	return &section, nil
 }
+
+func GetAllSection() ([]model.Section, error) {
+	var list []model.Section
+	err := model.DB.Select(&list, "SELECT * FROM section")
+	if err != nil {
+		return nil, fmt.Errorf("获取所有板块失败")
+	}
+	return list, nil
+}
