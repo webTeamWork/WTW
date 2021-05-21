@@ -51,8 +51,7 @@ func PostTopic(userID int, req *request.PostTopic) error {
 		}
 	}
 
-	err = tx.Commit()
-	if err != nil {
+	if err = tx.Commit(); err != nil {
 		_ = tx.Rollback()
 		return fmt.Errorf("发布帖子失败")
 	}

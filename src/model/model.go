@@ -72,3 +72,22 @@ type Comment struct {
 	CommentTime int    `db:"comment_time"`
 	Status      int8   `db:"status"`
 }
+
+const (
+	TipoffTargetTypeTopic   int8 = 1
+	TipoffTargetTypeComment int8 = 2
+)
+const (
+	TipoffProcessTypeOpen  int8 = 1
+	TipoffProcessTypeClose int8 = 2
+)
+
+type Tipoff struct {
+	TipID       int    `db:"tip_id"`
+	UserID      int    `db:"user_id"`
+	TargetType  int8   `db:"target_type"`
+	TargetID    int    `db:"target_id"`
+	Content     string `db:"content"`
+	TipoffTime  int    `db:"tipoff_time"`
+	ProcessType int8   `db:"process_type"`
+}

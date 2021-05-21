@@ -45,14 +45,22 @@ func getUserID(c *gin.Context) int {
 	return c.GetInt("UserID")
 }
 
-func getTopicID(c *gin.Context) (int, bool) {
-	topicID, err := strconv.Atoi(c.Param("topic_id"))
+func getParamID(c *gin.Context, key string) (int, bool) {
+	id, err := strconv.Atoi(c.Param(key))
 	if err != nil {
-		apiErr(c, "接口错误，无法获取帖子ID")
+		apiErr(c, "接口错误，无法获取ID")
 		return 0, false
-	} else if topicID <= 0 {
-		apiErr(c, "帖子ID非法")
+	} else if id <= 0 {
+		apiErr(c, "ID非法")
 		return 0, false
 	}
-	return topicID, true
+	return id, true
+}
+
+func getTopicID(c *gin.Context) (int, bool) {
+	return getParamID(c, "topic_id")
+}
+
+func getCommentID(c *gin.Context) (int, bool) {
+	return getParamID(c, "comment_id")
 }

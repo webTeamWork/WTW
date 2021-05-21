@@ -47,6 +47,7 @@ CREATE TABLE `section`  (
 DROP TABLE IF EXISTS `tipoff`;
 CREATE TABLE `tipoff`  (
   `tip_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `target_type` tinyint(1) NOT NULL,
   `target_id` int(11) NOT NULL,
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
