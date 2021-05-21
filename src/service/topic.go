@@ -59,6 +59,15 @@ func PostTopic(userID int, req *request.PostTopic) error {
 	return nil
 }
 
+func getTopic(topicID int) (*model.Topic, error) {
+	topic := model.Topic{}
+	err := model.DB.Get(&topic, "SELECT * FROM topic WHERE topic_id = ?", topicID)
+	if err != nil {
+		return nil, fmt.Errorf("帖子不存在")
+	}
+	return &topic, nil
+}
+
 func record(userID, topicID int, recordType int8) error {
 	// 获取之前的记录，点赞、收藏不允许重复执行
 	r := model.Record{}

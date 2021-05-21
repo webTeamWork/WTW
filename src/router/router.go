@@ -29,7 +29,7 @@ func RunAPP() {
 			topic := user.Group("/topic")
 			{
 				topic.POST("/", controller.PostTopic)                         //发帖
-				topic.POST("/:topic_id/comment")                              //回帖
+				topic.POST("/:topic_id/comment", controller.CommentTopic)     //回帖
 				topic.GET("/:topic_id/record", controller.GetUserTopicRecord) //用户某一帖子记录
 				topic.PUT("/:topic_id/thumb", controller.ThumbTopic)          //点赞贴子
 				topic.DELETE("/:topic_id/thumb", controller.CancelThumbTopic) //取消点赞

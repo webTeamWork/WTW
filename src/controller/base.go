@@ -50,6 +50,9 @@ func getTopicID(c *gin.Context) (int, bool) {
 	if err != nil {
 		apiErr(c, "接口错误，无法获取帖子ID")
 		return 0, false
+	} else if topicID <= 0 {
+		apiErr(c, "帖子ID非法")
+		return 0, false
 	}
 	return topicID, true
 }

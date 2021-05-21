@@ -58,3 +58,17 @@ type Record struct {
 	TopicID    int  `db:"topic_id"`
 	RecordTime int  `db:"record_time"`
 }
+
+const (
+	CommentStatusNormal int8 = 1
+	CommentStatusBan    int8 = 2
+)
+
+type Comment struct {
+	CommentID   int    `db:"comment_id"`
+	TopicID     int    `db:"topic_id"`
+	UserID      int    `db:"user_id"`
+	Content     string `db:"content"`
+	CommentTime int    `db:"comment_time"`
+	Status      int8   `db:"status"`
+}
