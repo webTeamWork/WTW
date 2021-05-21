@@ -138,3 +138,17 @@ func CancelThumbTopic(userID, topicID int) error {
 func CancelFavorTopic(userID, topicID int) error {
 	return UnRecord(userID, topicID, model.RecordTypeFavor)
 }
+
+func GetUserTopicRecord(userID, topicID int) (thumb, favor bool) {
+	thumb, favor = false, false
+	record := &model.Record{}
+	err := model.DB.Get(&record, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, model.RecordTypeThumb)
+	if err == nil {
+		thumb = true
+	}
+	err = model.DB.Get(&record, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, model.RecordTypeFavor)
+	if err == nil {
+		favor = true
+	}
+	return
+}

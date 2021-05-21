@@ -82,3 +82,18 @@ func CancelFavorTopic(c *gin.Context) {
 
 	apiOK(c, gin.H{}, "取消收藏成功")
 }
+
+func GetUserTopicRecord(c *gin.Context) {
+	topicID, ok := getTopicID(c)
+	if !ok {
+		return
+	}
+	userID := getUserID(c)
+
+	thumb, favor := service.GetUserTopicRecord(userID, topicID)
+
+	apiOK(c, gin.H{
+		"thumb": thumb,
+		"favor": favor,
+	}, "获取记录成功")
+}
