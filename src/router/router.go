@@ -36,11 +36,10 @@ func RunAPP() {
 				topic.PUT("/:topic_id/favor", controller.FavorTopic)          //收藏贴子
 				topic.DELETE("/:topic_id/favor", controller.CancelFavorTopic) //取消收藏
 				topic.POST("/:topic_id/tipoff")                               //举报帖子
-				topic.POST("/:topic_id")                                      //举报回帖
-				topic.POST("/comment/:comment_id/tipoff")                     //用户发布的贴子列表
+				topic.POST("/comment/:comment_id/tipoff")                     //举报回帖
 
-				topic.GET("/list")         //删自己的帖
-				topic.DELETE("/:topic_id") //浏览历史
+				topic.GET("/list")         //用户发布的贴子列表
+				topic.DELETE("/:topic_id") //删自己的帖
 			}
 
 			user.GET("/history/list") //浏览历史
