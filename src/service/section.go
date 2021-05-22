@@ -22,3 +22,11 @@ func GetAllSection() ([]model.Section, error) {
 	}
 	return list, nil
 }
+
+func GetSectionTopicCount(sectionID int) (int, error) {
+	section, err := getSection(sectionID)
+	if err != nil {
+		return 0, err
+	}
+	return section.TopicCount, nil
+}

@@ -42,7 +42,7 @@ func Login(c *gin.Context) {
 func GetUserDetail(c *gin.Context) {
 	userID := getUserID(c)
 
-	detail, err := service.UserDetail(userID)
+	detail, err := service.GetUserDetail(userID)
 	if err != nil {
 		apiErr(c, err.Error())
 		return

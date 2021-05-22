@@ -50,7 +50,7 @@ func getUser(userID int) (*model.User, error) {
 	return &detail, nil
 }
 
-func UserDetail(userID int) (*model.User, error) {
+func GetUserDetail(userID int) (*model.User, error) {
 	detail, err := getUser(userID)
 	return detail, err
 }

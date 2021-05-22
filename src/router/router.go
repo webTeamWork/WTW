@@ -12,13 +12,13 @@ func RunAPP() {
 
 	api := r.Group("/api/v1")
 	{
-		api.POST("/register", controller.Register)         //注册
-		api.POST("/login", controller.Login)               //登录
-		api.GET("/section/list", controller.GetAllSection) //所有板块
-		api.GET("/section/:section_id/topic/list")         //板块页帖子列表
-		api.GET("/search")                                 //搜索
-		api.GET("/topic/:topic_id/detail")                 //帖子详情
-		api.GET("/topic/:topic_id/comment/list")           //帖子回复列表
+		api.POST("/register", controller.Register)                                 //注册
+		api.POST("/login", controller.Login)                                       //登录
+		api.GET("/section/list", controller.GetAllSection)                         //所有板块
+		api.GET("/section/:section_id/topic/list", controller.GetSectionTopicList) //板块页帖子列表
+		api.GET("/search")                                                         //搜索
+		api.GET("/topic/:topic_id/detail")                                         //帖子详情
+		api.GET("/topic/:topic_id/comment/list")                                   //帖子回复列表
 
 		user := api.Group("/user", middleware.UserAuth)
 		{

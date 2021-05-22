@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"forum/src/model"
 	"forum/src/model/request"
+	"strconv"
 	"time"
 )
 
@@ -65,6 +66,46 @@ func getTopic(topicID int) (*model.Topic, error) {
 		return nil, fmt.Errorf("帖子不存在")
 	}
 	return &topic, nil
+}
+
+func GetSectionTopicList(sectionID, pi, ps int) ([]model.Topic, error) {
+	var list []model.Topic
+	err := model.DB.Select(&list, "SELECT *  FROM topic WHERE section_id = ? ORDER BY topic_id DESC LIMIT ?, ?", sectionID, (pi-1)*ps, ps)
+	if err != nil {
+		return nil, fmt.Errorf("获取帖子列表失败")
+	} else if len(list) == 0 {
+		return nil, fmt.Errorf("当前页无帖子")
+	}
+	return list, nil
+}
+
+func getTopicMeta(topicID int, name string) (string, error) {
+	var value string
+	err := model.DB.Get(&value, "SELECT mate_value FROM topic_meta WHERE topic_id = ? and meta_name = ", topicID, name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("帖子属性错误")
+		} else {
+			return "", fmt.Errorf("获取帖子属性失败")
+		}
+	}
+	return value, nil
+}
+
+func getTopicMetaInt(topicID int, name string) (int, error) {
+	value, err := getTopicMeta(topicID, name)
+	if err != nil {
+		return 0, err
+	}
+	count, err := strconv.Atoi(value)
+	if err != nil {
+		return 0, fmt.Errorf("帖子属性设置有误")
+	}
+	return count, nil
+}
+
+func GetTopicViewCount(topicID int) (int, error) {
+	return getTopicMetaInt(topicID, "view_count")
 }
 
 func record(userID, topicID int, recordType int8) error {

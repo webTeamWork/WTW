@@ -97,3 +97,59 @@ func GetUserTopicRecord(c *gin.Context) {
 		"favor": favor,
 	}, "获取记录成功")
 }
+
+func GetSectionTopicList(c *gin.Context) {
+	pager := request.Pager{}
+	if err := bindRequest(c, &pager); err != nil {
+		return
+	}
+
+	sectionID, ok := getSectionID(c)
+	if !ok {
+		return
+	}
+
+	data, err := service.GetSectionTopicList(sectionID, pager.Page, pager.Limit)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	type listItem struct {
+		TopicID      int    `json:"topic_id"`
+		UserNickname string `json:"user_nickname"`
+		Title        string `json:"title"`
+		Introduction string `json:"introduction"`
+		CreateTime   int    `json:"create_time"`
+		CommentTime  int    `json:"comment_time"`
+		ViewCount    int    `json:"view_count"`
+	}
+
+	list := make([]listItem, len(data))
+	for i, v := range data {
+		user, _ := service.GetUserDetail(v.UserID)
+		viewCount, _ := service.GetTopicViewCount(v.TopicID)
+		var intro string
+		if len(v.Content) > 100 {
+			intro = v.Content[:100]
+		} else {
+			intro = v.Content
+		}
+		list[i] = listItem{
+			TopicID:      v.TopicID,
+			UserNickname: user.Nickname,
+			Title:        v.Title,
+			Introduction: intro,
+			CreateTime:   v.CreateTime,
+			CommentTime:  v.CommentTime,
+			ViewCount:    viewCount,
+		}
+	}
+
+	count, _ := service.GetSectionTopicCount(sectionID)
+
+	apiOK(c, gin.H{
+		"count": count,
+		"list":  list,
+	}, "获取板块页帖子列表成功")
+}
