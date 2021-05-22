@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"forum/src/model"
 	"forum/src/model/request"
+	"math"
 	"strconv"
 	"time"
 )
@@ -206,4 +207,27 @@ func GetUserTopicRecord(userID, topicID int) (thumb, favor bool) {
 		favor = true
 	}
 	return
+}
+
+func Search(content string, pi, ps int) ([]model.Topic, int, error) {
+	var count int
+	err := model.DB.Get(&count, "SELECT count(*) FROM topic WHERE match(title) against(?)", content)
+	if err != nil {
+		if count == 0 {
+			return nil, 0, fmt.Errorf("搜索结果为空")
+		} else {
+			return nil, 0, fmt.Errorf("统计搜索结果时出现错误")
+		}
+	}
+
+	if pi > int(math.Ceil(float64(count)/float64(ps))) {
+		return nil, count, fmt.Errorf("当前页无帖子数据")
+	}
+
+	var list []model.Topic
+	err = model.DB.Select(&list, "SELECT * FROM topic WHERE match(title) against(?) ORDER BY topic_id DESC LIMIT ?, ?", content, (pi-1)*ps, ps)
+	if err != nil {
+		return nil, count, fmt.Errorf("获取搜索结果时出现错误")
+	}
+	return list, count, nil
 }

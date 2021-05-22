@@ -16,7 +16,7 @@ func RunAPP() {
 		api.POST("/login", controller.Login)                                       //登录
 		api.GET("/section/list", controller.GetAllSection)                         //所有板块
 		api.GET("/section/:section_id/topic/list", controller.GetSectionTopicList) //板块页帖子列表
-		api.GET("/search")                                                         //搜索
+		api.GET("/search", controller.Search)                                      //搜索
 		api.GET("/topic/:topic_id/detail", controller.GetTopicDetail)              //帖子详情
 		api.GET("/topic/:topic_id/comment/list", controller.GetTopicCommentList)   //帖子回帖列表
 
