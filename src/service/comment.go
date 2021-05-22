@@ -29,7 +29,7 @@ func CommentTopic(userID, topicID int, req *request.CommentTopic) error {
 		return fmt.Errorf("回帖失败")
 	}
 
-	_, err = tx.Exec("UPDATE topic SET comment_time = ? WHERE topic_id = ?", now, topicID)
+	_, err = tx.Exec("UPDATE topic SET comment_time = ?, comment_count = comment_count + 1 WHERE topic_id = ?", now, topicID)
 	if err != nil {
 		_ = tx.Rollback()
 		return fmt.Errorf("回帖相关操作失败")
@@ -50,4 +50,15 @@ func getComment(commentID int) (*model.Comment, error) {
 		return nil, fmt.Errorf("回帖不存在")
 	}
 	return &comment, nil
+}
+
+func GetTopicCommentList(topicID, pi, ps int) ([]model.Comment, error) {
+	var list []model.Comment
+	err := model.DB.Select(&list, "SELECT * FROM comment WHERE topic_id = ? ORDER BY comment_id LIMIT ?, ?", topicID, (pi-1)*ps, ps)
+	if err != nil {
+		return nil, fmt.Errorf("获取回帖失败")
+	} else if len(list) == 0 {
+		return nil, fmt.Errorf("当前页没有回帖")
+	}
+	return list, nil
 }

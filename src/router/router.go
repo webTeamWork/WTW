@@ -18,7 +18,7 @@ func RunAPP() {
 		api.GET("/section/:section_id/topic/list", controller.GetSectionTopicList) //板块页帖子列表
 		api.GET("/search")                                                         //搜索
 		api.GET("/topic/:topic_id/detail", controller.GetTopicDetail)              //帖子详情
-		api.GET("/topic/:topic_id/comment/list")                                   //帖子回复列表
+		api.GET("/topic/:topic_id/comment/list", controller.GetTopicCommentList)   //帖子回帖列表
 
 		user := api.Group("/user", middleware.UserAuth)
 		{
