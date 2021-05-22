@@ -153,3 +153,32 @@ func GetSectionTopicList(c *gin.Context) {
 		"list":  list,
 	}, "获取板块页帖子列表成功")
 }
+
+func GetTopicDetail(c *gin.Context) {
+	topicID, ok := getTopicID(c)
+	if !ok {
+		return
+	}
+
+	topic, err := service.GetTopic(topicID)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	user, _ := service.GetUserDetail(topic.UserID)
+	view, _ := service.GetTopicViewCount(topicID)
+	thumb, _ := service.GetTopicThumbCount(topicID)
+	favor, _ := service.GetTopicFavorCount(topicID)
+
+	apiOK(c, gin.H{
+		"user_nickname": user.Nickname,
+		"title":         topic.Title,
+		"content":       topic.Content,
+		"create_time":   topic.CreateTime,
+		"comment_time":  topic.CommentTime,
+		"view_count":    view,
+		"thumb_count":   thumb,
+		"favor_count":   favor,
+	}, "获取帖子详情成功")
+}

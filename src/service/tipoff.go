@@ -11,7 +11,7 @@ func tipoff(userID, targetID int, targetType int8, req *request.Tipoff) error {
 	var err error
 	switch targetType {
 	case model.TipoffTargetTypeTopic:
-		_, err = getTopic(targetID)
+		_, err = GetTopic(targetID)
 	case model.TipoffTargetTypeComment:
 		_, err = getComment(targetID)
 	default:

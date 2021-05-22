@@ -8,7 +8,7 @@ import (
 )
 
 func CommentTopic(userID, topicID int, req *request.CommentTopic) error {
-	_, err := getTopic(topicID)
+	_, err := GetTopic(topicID)
 	if err != nil {
 		return err
 	}

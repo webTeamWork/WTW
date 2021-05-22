@@ -59,7 +59,7 @@ func PostTopic(userID int, req *request.PostTopic) error {
 	return nil
 }
 
-func getTopic(topicID int) (*model.Topic, error) {
+func GetTopic(topicID int) (*model.Topic, error) {
 	topic := model.Topic{}
 	err := model.DB.Get(&topic, "SELECT * FROM topic WHERE topic_id = ?", topicID)
 	if err != nil {
@@ -106,6 +106,12 @@ func getTopicMetaInt(topicID int, name string) (int, error) {
 
 func GetTopicViewCount(topicID int) (int, error) {
 	return getTopicMetaInt(topicID, "view_count")
+}
+func GetTopicThumbCount(topicID int) (int, error) {
+	return getTopicMetaInt(topicID, "thumb_count")
+}
+func GetTopicFavorCount(topicID int) (int, error) {
+	return getTopicMetaInt(topicID, "favor_count")
 }
 
 func record(userID, topicID int, recordType int8) error {
