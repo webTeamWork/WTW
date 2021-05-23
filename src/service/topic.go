@@ -80,9 +80,20 @@ func GetSectionTopicList(sectionID, pi, ps int) ([]model.Topic, error) {
 	return list, nil
 }
 
+func GetUserTopicList(userID, pi, ps int) ([]model.Topic, error) {
+	var list []model.Topic
+	err := model.DB.Select(&list, "SELECT *  FROM topic WHERE user_id = ? ORDER BY topic_id DESC LIMIT ?, ?", userID, (pi-1)*ps, ps)
+	if err != nil {
+		return nil, fmt.Errorf("获取帖子列表失败")
+	} else if len(list) == 0 {
+		return nil, fmt.Errorf("当前页无帖子")
+	}
+	return list, nil
+}
+
 func getTopicMeta(topicID int, name string) (string, error) {
 	var value string
-	err := model.DB.Get(&value, "SELECT mate_value FROM topic_meta WHERE topic_id = ? and meta_name = ", topicID, name)
+	err := model.DB.Get(&value, "SELECT mate_value FROM topic_meta WHERE topic_id = ? and meta_name = ?", topicID, name)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", fmt.Errorf("帖子属性错误")

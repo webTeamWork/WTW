@@ -1,10 +1,13 @@
 package service
 
 import (
+	"crypto/md5"
+	"database/sql"
 	"fmt"
 	"forum/src/model"
 	"forum/src/model/request"
 	"forum/src/utils/jwt"
+	"strconv"
 	"time"
 )
 
@@ -15,13 +18,37 @@ func Register(req *request.Register) error {
 		return fmt.Errorf("邮箱已存在")
 	}
 
-	tx, _ := model.DB.Beginx()
-	// TODO 头像
-	_, _ = tx.Exec("INSERT INTO user(email, password, nickname, avatar, user_type, create_time) VALUES(?, ?, ?, ?, ?, ?)",
-		req.Email, req.Password, req.Nickname, "", model.UserTypeUser, time.Now().Unix(),
-	)
+	// gravatar头像
+	a := md5.New()
+	_, _ = a.Write([]byte(req.Email))
+	avatar := fmt.Sprintf("https://gravatar.loli.net/avatar/%x?d=identicon", a.Sum(nil))
 
-	// TODO 添加meta表数据
+	tx, _ := model.DB.Beginx()
+	fmt.Print(avatar)
+	result, _ := tx.Exec("INSERT INTO user(email, password, nickname, avatar, user_type, create_time) VALUES(?, ?, ?, ?, ?, ?)",
+		req.Email, req.Password, req.Nickname, avatar, model.UserTypeUser, time.Now().Unix(),
+	)
+	userID, err := result.LastInsertId()
+	if err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("注册用户失败")
+	}
+
+	// 添加meta表数据
+	metas := []string{"topic_count", "comment_count", "view_count", "thumb_count", "favor_count"}
+	for _, v := range metas {
+		_, err = tx.NamedExec("INSERT INTO user_meta(user_id, meta_name, meta_value) VALUES(:user_id, :meta_name, :meta_value)",
+			model.UserMeta{
+				UserID:    int(userID),
+				MetaName:  v,
+				MetaValue: "0",
+			},
+		)
+		if err != nil {
+			_ = tx.Rollback()
+			return fmt.Errorf("设置用户属性失败")
+		}
+	}
 
 	if err := tx.Commit(); err != nil {
 		_ = tx.Rollback()
@@ -64,7 +91,7 @@ func ChangeUserNickname(userID int, newName string) error {
 	tx, _ := model.DB.Beginx()
 	_, _ = tx.Exec("UPDATE user SET nickname = ? WHERE user_id = ?", newName, detail.UserID)
 	if err = tx.Commit(); err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return fmt.Errorf("修改用户昵称失败")
 	}
 	return nil
@@ -87,4 +114,33 @@ func ChangeUserPassword(userID int, old, new string) error {
 		return fmt.Errorf("修改用户密码失败")
 	}
 	return nil
+}
+
+func getUserMeta(userID int, name string) (string, error) {
+	var value string
+	err := model.DB.Get(&value, "SELECT mate_value FROM user_meta WHERE user_id = ? and meta_name = ?", userID, name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", fmt.Errorf("用户属性错误")
+		} else {
+			return "", fmt.Errorf("获取用户属性失败")
+		}
+	}
+	return value, nil
+}
+
+func getUserMetaInt(userID int, name string) (int, error) {
+	value, err := getUserMeta(userID, name)
+	if err != nil {
+		return 0, err
+	}
+	i, err := strconv.Atoi(value)
+	if err != nil {
+		return 0, fmt.Errorf("用户属性设置有误")
+	}
+	return i, nil
+}
+
+func GetUserTopicCount(userID int) (int, error) {
+	return getUserMetaInt(userID, "topic_count")
 }

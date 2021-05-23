@@ -15,6 +15,13 @@ type User struct {
 	CreateTime int    `db:"create_time"`
 }
 
+type UserMeta struct {
+	MetaID    int    `db:"meta_id"`
+	UserID    int    `db:"user_id"`
+	MetaName  string `db:"meta_name"`
+	MetaValue string `db:"meta_value"`
+}
+
 const (
 	TopicStatusNormal int8 = 1
 	TopicStatusBan    int8 = 2
