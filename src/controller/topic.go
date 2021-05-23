@@ -161,6 +161,8 @@ func GetTopicDetail(c *gin.Context) {
 		return
 	}
 
+	userID := getUserID(c)
+
 	topic, err := service.GetTopic(topicID)
 	if err != nil {
 		apiErr(c, err.Error())
@@ -188,6 +190,9 @@ func GetTopicDetail(c *gin.Context) {
 		"favor_count":   favor,
 		"can_see":       canSee,
 	}, "获取帖子详情成功")
+
+	// 记录浏览记录
+	go service.ViewTopic(userID, topicID)
 }
 
 func Search(c *gin.Context) {

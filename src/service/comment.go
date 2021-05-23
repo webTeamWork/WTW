@@ -35,6 +35,9 @@ func CommentTopic(userID, topicID int, req *request.CommentTopic) error {
 		return fmt.Errorf("回帖相关操作失败")
 	}
 
+	// 用户meta
+	_, _ = tx.Exec("UPDATE user_meta SET meta_value = meta_value + 1 WHERE user_id = ? and meta_name = ?", userID, "comment_count")
+
 	if err = tx.Commit(); err != nil {
 		_ = tx.Rollback()
 		return fmt.Errorf("发布回帖失败")

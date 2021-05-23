@@ -53,6 +53,9 @@ func PostTopic(userID int, req *request.PostTopic) error {
 		}
 	}
 
+	// 用户meta更新
+	_, _ = tx.Exec("UPDATE user_meta SET meta_value = meta_value + 1 WHERE user_id = ? and meta_name = ?", userID, "topic_count")
+
 	if err = tx.Commit(); err != nil {
 		_ = tx.Rollback()
 		return fmt.Errorf("发布帖子失败")
@@ -67,6 +70,41 @@ func GetTopic(topicID int) (*model.Topic, error) {
 		return nil, fmt.Errorf("帖子不存在")
 	}
 	return &topic, nil
+}
+
+func ViewTopic(userID, topicID int) error {
+	tx, _ := model.DB.Beginx()
+	// 文章阅读量统计
+	_, _ = tx.Exec("UPDATE topic_meta SET meta_value = meta_value + 1 WHERE topic_id = ? and meta_name = ?", topicID, "view_count")
+
+	// 用户阅读记录统计
+	if userID > 0 {
+		r := model.Record{}
+		now := int(time.Now().Unix())
+		err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, model.RecordTypeView)
+		if err == nil {
+			_, _ = tx.Exec("UPDATE record SET record_time = ? WHERE record_id = ?", now, r.RecordID)
+		} else if err == sql.ErrNoRows {
+			_, _ = tx.NamedExec("INSERT INTO record(user_id, record_type, topic_id, record_time) VALUES(:user_id, :record_type, :topic_id, :record_time)",
+				model.Record{
+					UserID:     userID,
+					RecordType: model.RecordTypeView,
+					TopicID:    topicID,
+					RecordTime: now,
+				},
+			)
+			_, _ = tx.Exec("UPDATE user_meta SET meta_value = meta_value + 1 WHERE user_id = ? and meta_name = ?", userID, "view_count")
+		} else {
+			_ = tx.Rollback()
+			return fmt.Errorf("获取用户数据出错")
+		}
+	}
+
+	if err := tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("浏览文章失败")
+	}
+	return nil
 }
 
 func GetSectionTopicList(sectionID, pi, ps int) ([]model.Topic, error) {
@@ -127,13 +165,11 @@ func GetTopicFavorCount(topicID int) (int, error) {
 }
 
 func record(userID, topicID int, recordType int8) error {
-	// 获取之前的记录，点赞、收藏不允许重复执行
+	// 获取之前的记录（点赞、收藏），判断不允许重复执行
 	r := model.Record{}
 	err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, recordType)
 	if err == nil {
-		if recordType == model.RecordTypeThumb || recordType == model.RecordTypeFavor {
-			return fmt.Errorf("已经记录过")
-		}
+		return fmt.Errorf("已经记录过")
 	} else if err != sql.ErrNoRows {
 		return fmt.Errorf("数据库查询错误")
 	}
@@ -141,20 +177,27 @@ func record(userID, topicID int, recordType int8) error {
 	// 记录到数据库，或修改浏览时间
 	tx, _ := model.DB.Beginx()
 	now := int(time.Now().Unix())
-	if recordType == model.RecordTypeView {
-		_, err = tx.Exec("UPDATE record SET record_time = ? WHERE record_id = ?", now, r.RecordID)
-	} else {
-		_, err = tx.NamedExec("INSERT INTO record(user_id, record_type, topic_id, record_time) VALUES(:user_id, :record_type, :topic_id, :record_time)",
-			model.Record{
-				UserID:     userID,
-				RecordType: recordType,
-				TopicID:    topicID,
-				RecordTime: now,
-			},
-		)
-	}
+	_, err = tx.NamedExec("INSERT INTO record(user_id, record_type, topic_id, record_time) VALUES(:user_id, :record_type, :topic_id, :record_time)",
+		model.Record{
+			UserID:     userID,
+			RecordType: recordType,
+			TopicID:    topicID,
+			RecordTime: now,
+		},
+	)
 	if err != nil {
 		return fmt.Errorf("记录失败")
+	}
+
+	// 用户meta
+	switch recordType {
+	case model.RecordTypeThumb:
+		_, err = tx.Exec("UPDATE user_meta SET meta_value = meta_value + 1 WHERE user_id = ? and meta_name = ?", userID, "thumb_count")
+	case model.RecordTypeFavor:
+		_, err = tx.Exec("UPDATE user_meta SET meta_value = meta_value + 1 WHERE user_id = ? and meta_name = ?", userID, "favor_count")
+	}
+	if err != nil {
+		return fmt.Errorf("用户记录失败")
 	}
 
 	if err = tx.Commit(); err != nil {
@@ -189,6 +232,17 @@ func UnRecord(userID, topicID int, recordType int8) error {
 	_, err = tx.Exec("DELETE FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, recordType)
 	if err != nil {
 		return fmt.Errorf("删除记录失败")
+	}
+
+	// 用户meta
+	switch recordType {
+	case model.RecordTypeThumb:
+		_, err = tx.Exec("UPDATE user_meta SET meta_value = meta_value - 1 WHERE user_id = ? and meta_name = ?", userID, "thumb_count")
+	case model.RecordTypeFavor:
+		_, err = tx.Exec("UPDATE user_meta SET meta_value = meta_value - 1 WHERE user_id = ? and meta_name = ?", userID, "favor_count")
+	}
+	if err != nil {
+		return fmt.Errorf("删除用户记录信息失败")
 	}
 
 	if err = tx.Commit(); err != nil {
