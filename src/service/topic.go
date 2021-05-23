@@ -242,3 +242,14 @@ func Search(content string, pi, ps int) ([]model.Topic, int, error) {
 	}
 	return list, count, nil
 }
+
+func GetUserRocordList(userID int, recordType int8, pi, ps int) ([]model.Record, error) {
+	var list []model.Record
+	err := model.DB.Select(&list, "SELECT *  FROM record WHERE user_id = ? and record_type = ? ORDER BY record_id DESC LIMIT ?, ?", userID, recordType, (pi-1)*ps, ps)
+	if err != nil {
+		return nil, fmt.Errorf("获取记录列表失败")
+	} else if len(list) == 0 {
+		return nil, fmt.Errorf("当前页无记录")
+	}
+	return list, nil
+}

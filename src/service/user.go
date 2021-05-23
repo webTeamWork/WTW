@@ -144,3 +144,15 @@ func getUserMetaInt(userID int, name string) (int, error) {
 func GetUserTopicCount(userID int) (int, error) {
 	return getUserMetaInt(userID, "topic_count")
 }
+
+func GetUserViewCount(userID int) (int, error) {
+	return getUserMetaInt(userID, "view_count")
+}
+
+func GetUserThumbCount(userID int) (int, error) {
+	return getUserMetaInt(userID, "thumb_count")
+}
+
+func GetUserFavorCount(userID int) (int, error) {
+	return getUserMetaInt(userID, "favor_count")
+}

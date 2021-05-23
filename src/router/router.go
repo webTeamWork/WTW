@@ -3,6 +3,7 @@ package router
 import (
 	"forum/src/controller"
 	"forum/src/middleware"
+	"forum/src/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,9 +43,9 @@ func RunAPP() {
 				topic.DELETE("/:topic_id")                      //删自己的帖
 			}
 
-			user.GET("/history/list") //浏览历史
-			user.GET("/thumb/list")   //点赞记录
-			user.GET("/favor/list")   //收藏夹
+			user.GET("/history/list", controller.GetUserRecordList(model.RecordTypeView)) //浏览历史
+			user.GET("/thumb/list", controller.GetUserRecordList(model.RecordTypeThumb))  //点赞记录
+			user.GET("/favor/list", controller.GetUserRecordList(model.RecordTypeFavor))  //收藏夹
 		}
 
 		admin := api.Group("/admin")

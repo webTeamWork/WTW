@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"forum/src/model"
 	"forum/src/model/request"
 	"forum/src/service"
 
@@ -283,4 +284,66 @@ func GetUserTopicList(c *gin.Context) {
 		"count": count,
 		"list":  list,
 	}, "获取用户发布帖子列表成功")
+}
+
+func GetUserRecordList(recordType int8) func(*gin.Context) {
+	return func(c *gin.Context) {
+		if recordType != model.RecordTypeView && recordType != model.RecordTypeThumb && recordType != model.RecordTypeFavor {
+			apiErr(c, "未知记录类型")
+			return
+		}
+
+		d := request.Pager{}
+		if err := bindRequest(c, &d); err != nil {
+			apiInputErr(c)
+			return
+		}
+		userID := getUserID(c)
+
+		records, err := service.GetUserRocordList(userID, recordType, d.Page, d.Limit)
+		if err != nil {
+			apiErr(c, err.Error())
+			return
+		}
+
+		type listItem struct {
+			TopicID      int    `json:"topic_id"`
+			Title        string `json:"title"`
+			Introduction string `json:"introduction"`
+			ViewCount    int    `json:"view_count"`
+		}
+
+		list := make([]listItem, len(records))
+		for i, record := range records {
+			topic, _ := service.GetTopic(record.TopicID)
+			var intro string
+			if len(topic.Content) > 100 {
+				intro = topic.Content[:100]
+			} else {
+				intro = topic.Content
+			}
+			viewCount, _ := service.GetTopicViewCount(topic.TopicID)
+			list[i] = listItem{
+				TopicID:      i,
+				Title:        topic.Title,
+				Introduction: intro,
+				ViewCount:    viewCount,
+			}
+		}
+
+		var count int
+		switch recordType {
+		case model.RecordTypeView:
+			count, _ = service.GetUserViewCount(userID)
+		case model.RecordTypeThumb:
+			count, _ = service.GetUserThumbCount(userID)
+		case model.RecordTypeFavor:
+			count, _ = service.GetUserFavorCount(userID)
+		}
+
+		apiOK(c, gin.H{
+			"count": count,
+			"list":  list,
+		}, "获取用户记录列表成功")
+	}
 }
