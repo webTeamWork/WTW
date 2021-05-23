@@ -89,3 +89,18 @@ func GetTopicTipoffCount() int {
 func GetCommentTipoffCount() int {
 	return getTipoffCount(model.TipoffTargetTypeComment)
 }
+
+func ProcessTipoff(tipID int) error {
+	tx, _ := model.DB.Beginx()
+	_, err := tx.Exec("UPDATE tipoff SET process_type = ? WHERE tip_id = ?", model.TipoffProcessTypeClose, tipID)
+	if err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("处理举报失败")
+	}
+
+	if err = tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("处理举报操作失败")
+	}
+	return nil
+}

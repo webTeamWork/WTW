@@ -68,3 +68,7 @@ func getCommentID(c *gin.Context) (int, bool) {
 func getSectionID(c *gin.Context) (int, bool) {
 	return getParamID(c, "section_id")
 }
+
+func getTipID(c *gin.Context) (int, bool) {
+	return getParamID(c, "tip_id")
+}

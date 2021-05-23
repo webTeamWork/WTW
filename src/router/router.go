@@ -54,7 +54,7 @@ func RunAPP() {
 			{
 				tipoff.GET("/topic/list", controller.GetTipoffList(model.TipoffTargetTypeTopic))     //帖子举报列表
 				tipoff.GET("/comment/list", controller.GetTipoffList(model.TipoffTargetTypeComment)) //回帖举报列表
-				tipoff.PUT("/process/:tip_id")                                                       //处理举报工单
+				tipoff.PUT("/process/:tip_id", controller.ProcessTipoff)                             //处理举报工单
 			}
 
 			admin.DELETE("/topic/:topic_id", controller.BanTopic)       //封贴

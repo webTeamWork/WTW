@@ -103,3 +103,17 @@ func GetTipoffList(targetType int8) func(*gin.Context) {
 		}, "获取举报列表成功")
 	}
 }
+
+func ProcessTipoff(c *gin.Context) {
+	tipID, ok := getTipID(c)
+	if !ok {
+		return
+	}
+
+	err := service.ProcessTipoff(tipID)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+	apiOK(c, gin.H{}, "处理举报成功")
+}
