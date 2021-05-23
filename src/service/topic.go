@@ -129,7 +129,7 @@ func GetTopicFavorCount(topicID int) (int, error) {
 func record(userID, topicID int, recordType int8) error {
 	// 获取之前的记录，点赞、收藏不允许重复执行
 	r := model.Record{}
-	err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, recordType)
+	err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, recordType)
 	if err == nil {
 		if recordType == model.RecordTypeThumb || recordType == model.RecordTypeFavor {
 			return fmt.Errorf("已经记录过")
@@ -175,7 +175,7 @@ func FavorTopic(userID, topicID int) error {
 func UnRecord(userID, topicID int, recordType int8) error {
 	// 获取之前的记录
 	r := model.Record{}
-	err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, recordType)
+	err := model.DB.Get(&r, "SELECT * FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, recordType)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return fmt.Errorf("记录不存在")
@@ -186,7 +186,7 @@ func UnRecord(userID, topicID int, recordType int8) error {
 
 	// 删除记录
 	tx, _ := model.DB.Beginx()
-	_, err = tx.Exec("DELETE FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, recordType)
+	_, err = tx.Exec("DELETE FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, recordType)
 	if err != nil {
 		return fmt.Errorf("删除记录失败")
 	}
@@ -209,11 +209,11 @@ func CancelFavorTopic(userID, topicID int) error {
 func GetUserTopicRecord(userID, topicID int) (thumb, favor bool) {
 	thumb, favor = false, false
 	record := &model.Record{}
-	err := model.DB.Get(&record, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, model.RecordTypeThumb)
+	err := model.DB.Get(&record, "SELECT * FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, model.RecordTypeThumb)
 	if err == nil {
 		thumb = true
 	}
-	err = model.DB.Get(&record, "SELECT * FROM record WHERE user_id = ?, topic_id = ?, record_type = ?", userID, topicID, model.RecordTypeFavor)
+	err = model.DB.Get(&record, "SELECT * FROM record WHERE user_id = ? and topic_id = ? and record_type = ?", userID, topicID, model.RecordTypeFavor)
 	if err == nil {
 		favor = true
 	}

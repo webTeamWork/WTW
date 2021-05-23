@@ -110,7 +110,7 @@ func ChangeUserPassword(userID int, old, new string) error {
 	tx, _ := model.DB.Beginx()
 	_, _ = tx.Exec("UPDATE user SET password = ? WHERE user_id = ?", new, detail.UserID)
 	if err = tx.Commit(); err != nil {
-		tx.Rollback()
+		_ = tx.Rollback()
 		return fmt.Errorf("修改用户密码失败")
 	}
 	return nil
