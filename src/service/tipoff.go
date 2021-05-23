@@ -53,3 +53,39 @@ func TipoffTopic(userID, topicID int, req *request.Tipoff) error {
 func TipoffComment(userID, commentID int, req *request.Tipoff) error {
 	return tipoff(userID, commentID, model.TipoffTargetTypeComment, req)
 }
+
+func getTipoffList(targetType int8, pi, ps int) ([]model.Tipoff, error) {
+	var list []model.Tipoff
+	err := model.DB.Select(&list, "SELECT * FROM tipoff WHERE target_type = ? ORDER BY tip_id DESC LIMIT ?, ?", targetType, (pi-1)*ps, ps)
+	if err != nil {
+		return nil, fmt.Errorf("获取举报列表失败")
+	} else if len(list) == 0 {
+		return nil, fmt.Errorf("当前页无举报记录")
+	}
+	return list, nil
+}
+
+func GetTopicTipoffList(pi, ps int) ([]model.Tipoff, error) {
+	return getTipoffList(model.TipoffTargetTypeTopic, pi, ps)
+}
+
+func GetCommentTipoffList(pi, ps int) ([]model.Tipoff, error) {
+	return getTipoffList(model.TipoffTargetTypeComment, pi, ps)
+}
+
+func getTipoffCount(targetType int8) int {
+	var count int
+	err := model.DB.Get(&count, "SELECT count(*) FROM tipoff WHERE target_type = ?", targetType)
+	if err != nil {
+		return 0
+	}
+	return count
+}
+
+func GetTopicTipoffCount() int {
+	return getTipoffCount(model.TipoffTargetTypeTopic)
+}
+
+func GetCommentTipoffCount() int {
+	return getTipoffCount(model.TipoffTargetTypeComment)
+}
