@@ -48,7 +48,7 @@ func RunAPP() {
 			user.GET("/favor/list", controller.GetUserRecordList(model.RecordTypeFavor))  //收藏夹
 		}
 
-		admin := api.Group("/admin")
+		admin := api.Group("/admin", middleware.AdminAuth)
 		{
 			tipoff := admin.Group("/tipoff")
 			{

@@ -16,7 +16,7 @@ func apiUnauth(c *gin.Context, msg string) {
 	c.Abort()
 }
 
-func UserAuth(c *gin.Context) {
+func auth(c *gin.Context, userType int8) {
 	token := c.GetHeader("User-Token")
 	claims, err := jwt.ParseJWT(token)
 	if err != nil {
@@ -24,13 +24,21 @@ func UserAuth(c *gin.Context) {
 		return
 	}
 
-	var userType int8
-	err = model.DB.Get(&userType, "SELECT user_type FROM user WHERE user_id = ?", claims.UserID)
-	if err != nil || userType != model.UserTypeUser {
+	var t int8
+	err = model.DB.Get(&t, "SELECT user_type FROM user WHERE user_id = ?", claims.UserID)
+	if err != nil || t != userType {
 		apiUnauth(c, "无权限访问该接口")
 		return
 	}
 
 	c.Set("UserID", claims.UserID)
 	c.Next()
+}
+
+func UserAuth(c *gin.Context) {
+	auth(c, model.UserTypeUser)
+}
+
+func AdminAuth(c *gin.Context) {
+	auth(c, model.UserTypeAdmin)
 }
