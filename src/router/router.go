@@ -39,8 +39,8 @@ func RunAPP() {
 				topic.POST("/:topic_id/tipoff", controller.TipoffTopic)             //举报帖子
 				topic.POST("/comment/:comment_id/tipoff", controller.TipoffComment) //举报回帖
 
-				topic.GET("/list", controller.GetUserTopicList) //用户发布的贴子列表
-				topic.DELETE("/:topic_id")                      //删自己的帖
+				topic.GET("/list", controller.GetUserTopicList)    //用户发布的贴子列表
+				topic.DELETE("/:topic_id", controller.DeleteTopic) //删自己的帖
 			}
 
 			user.GET("/history/list", controller.GetUserRecordList(model.RecordTypeView)) //浏览历史

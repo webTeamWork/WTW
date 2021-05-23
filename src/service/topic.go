@@ -254,6 +254,26 @@ func GetUserRocordList(userID int, recordType int8, pi, ps int) ([]model.Record,
 	return list, nil
 }
 
+func DeleteTopic(userID, topicID int) error {
+	tx, _ := model.DB.Beginx()
+	result, err := tx.Exec("UPDATE topic SET status = ? WHERE topicID = ? and userID = ?", model.TopicStatusDelete, topicID, userID)
+	if err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("删除帖子失败")
+	}
+	a, _ := result.RowsAffected()
+	if a == 0 {
+		_ = tx.Rollback()
+		return fmt.Errorf("该用户不存在该帖子")
+	}
+
+	if err = tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("删除帖子操作失败")
+	}
+	return nil
+}
+
 func BanTopic(topicID int) error {
 	tx, _ := model.DB.Beginx()
 	_, err := tx.Exec("UPDATE topic SET status = ? WHERE topic_id = ?", model.TopicStatusBan, topicID)

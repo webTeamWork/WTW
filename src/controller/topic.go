@@ -354,6 +354,22 @@ func GetUserRecordList(recordType int8) func(*gin.Context) {
 	}
 }
 
+func DeleteTopic(c *gin.Context) {
+	topicID, ok := getTopicID(c)
+	if !ok {
+		return
+	}
+	userID := getUserID(c)
+
+	err := service.DeleteTopic(userID, topicID)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{}, "删除帖子成功")
+}
+
 func BanTopic(c *gin.Context) {
 	topicID, ok := getTopicID(c)
 	if !ok {
