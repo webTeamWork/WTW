@@ -57,8 +57,8 @@ func RunAPP() {
 				tipoff.PUT("/process/:tip_id")                                                       //处理举报工单
 			}
 
-			admin.DELETE("/topic/:topic_id")     //封贴
-			admin.DELETE("/comment/:comment_id") //封回帖
+			admin.DELETE("/topic/:topic_id", controller.BanTopic)       //封贴
+			admin.DELETE("/comment/:comment_id", controller.BanComment) //封回帖
 		}
 	}
 

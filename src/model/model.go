@@ -25,6 +25,7 @@ type UserMeta struct {
 const (
 	TopicStatusNormal int8 = 1
 	TopicStatusBan    int8 = 2
+	TopicStatusDelete int8 = 3
 )
 
 type Topic struct {

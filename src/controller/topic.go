@@ -171,6 +171,11 @@ func GetTopicDetail(c *gin.Context) {
 	view, _ := service.GetTopicViewCount(topicID)
 	thumb, _ := service.GetTopicThumbCount(topicID)
 	favor, _ := service.GetTopicFavorCount(topicID)
+	canSee := true
+	if topic.Status == model.CommentStatusBan || topic.Status == model.TopicStatusDelete {
+		canSee = false
+		topic.Content = "由于被屏蔽或被删除，该贴子不可见，"
+	}
 
 	apiOK(c, gin.H{
 		"user_nickname": user.Nickname,
@@ -181,6 +186,7 @@ func GetTopicDetail(c *gin.Context) {
 		"view_count":    view,
 		"thumb_count":   thumb,
 		"favor_count":   favor,
+		"can_see":       canSee,
 	}, "获取帖子详情成功")
 }
 
@@ -346,4 +352,34 @@ func GetUserRecordList(recordType int8) func(*gin.Context) {
 			"list":  list,
 		}, "获取用户记录列表成功")
 	}
+}
+
+func BanTopic(c *gin.Context) {
+	topicID, ok := getTopicID(c)
+	if !ok {
+		return
+	}
+
+	err := service.BanTopic(topicID)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{}, "屏蔽帖子成功")
+}
+
+func BanComment(c *gin.Context) {
+	commentID, ok := getCommentID(c)
+	if !ok {
+		return
+	}
+
+	err := service.BanComment(commentID)
+	if err != nil {
+		apiErr(c, err.Error())
+		return
+	}
+
+	apiOK(c, gin.H{}, "屏蔽回帖成功")
 }

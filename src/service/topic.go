@@ -253,3 +253,33 @@ func GetUserRocordList(userID int, recordType int8, pi, ps int) ([]model.Record,
 	}
 	return list, nil
 }
+
+func BanTopic(topicID int) error {
+	tx, _ := model.DB.Beginx()
+	_, err := tx.Exec("UPDATE topic SET status = ? WHERE topic_id = ?", model.TopicStatusBan, topicID)
+	if err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("屏蔽帖子失败")
+	}
+
+	if err = tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("屏蔽帖子操作失败")
+	}
+	return nil
+}
+
+func BanComment(commentID int) error {
+	tx, _ := model.DB.Beginx()
+	_, err := tx.Exec("UPDATE comment SET status = ? WHERE comment_id = ?", model.CommentStatusBan, commentID)
+	if err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("屏蔽回帖失败")
+	}
+
+	if err = tx.Commit(); err != nil {
+		_ = tx.Rollback()
+		return fmt.Errorf("屏蔽回帖操作失败")
+	}
+	return nil
+}
