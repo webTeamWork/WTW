@@ -2,9 +2,9 @@
 ## 小组成员任务分工（按字母顺序）
 + 倪嘉伟——组长&中期汇报
 + 陈君鹏——论坛后端技术实现
-+ 兰佳薇——task3&task8
-+ 刘琼———task9&前端debug&github提交
-+ 李俞颉——task5&task11&中期汇报PPT
++ 兰佳薇——task3&task9
++ 刘琼———task8&前端debug&github提交
++ 李俞颉——task5&task11&最终汇报PPT
 + 孙文昕——功能及接口说明&前端debug&task2
 + 朱锋———中期汇报PPT&task7&task12
 + 张耀仁——前端代码框架&结课展示
