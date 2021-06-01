@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="bbc:war">
+    <output-path>$PROJECT_DIR$/classes/artifacts/bbc_war</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="lib">
+          <element id="library" level="module" name="activation.jar" module-name="BBS" />
+          <element id="library" level="module" name="junit4" module-name="BBS" />
+          <element id="library" level="module" name="mail.jar" module-name="BBS" />
+          <element id="library" level="module" name="mysql-connector-java-5.1.35-bin.jar" module-name="BBS" />
+          <element id="library" level="project" name="lib" />
+        </element>
+        <element id="directory" name="classes">
+          <element id="module-output" name="BBS" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="BBS/web/Web" />
+      <element id="javaee-facet-resources" facet="BBS/web/Web2" />
+    </root>
+  </artifact>
+</component>
+
