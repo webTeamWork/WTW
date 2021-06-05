@@ -12,4 +12,4 @@
 
 ​																						  适应性模型
 
-![img](file:///https://github.com/webTeamWork/WTW/blob/main/Task4/%E9%80%82%E5%BA%94%E6%80%A7%E6%A8%A1%E5%9E%8B.png)
+![img](https://github.com/webTeamWork/WTW/blob/main/Task4/%E9%80%82%E5%BA%94%E6%80%A7%E6%A8%A1%E5%9E%8B.png)
