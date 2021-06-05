@@ -1,6 +1,6 @@
 												需求功能模型
 
-![img](file:///https://github.com/webTeamWork/WTW/blob/main/Task4/%E5%AF%BC%E8%88%AA%E8%AE%BF%E9%97%AE%E6%A8%A1%E5%9E%8B.png)
+![img](https://github.com/webTeamWork/WTW/blob/main/Task4/%E9%9C%80%E6%B1%82%E5%8A%9F%E8%83%BD%E6%A8%A1%E5%9E%8B.png)
 
 ​																							导航访问模型
 
