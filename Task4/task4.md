@@ -8,8 +8,8 @@
 
 ​																						  内容模型
 
-![image-20210605160552649](C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\image-20210605160552649.png)
+![image-20210605160552649](https://github.com/webTeamWork/WTW/blob/main/Task4/%E5%86%85%E5%AE%B9%E6%A8%A1%E5%9E%8B.png)
 
 ​																						  适应性模型
 
-![img](file:///C:\Users\DELL\Documents\Tencent Files\1070332897\Image\C2C\NT~I7J[ZFS6SGM46_Z2T~97.png)
+![img](file:///https://github.com/webTeamWork/WTW/blob/main/Task4/%E9%80%82%E5%BA%94%E6%80%A7%E6%A8%A1%E5%9E%8B.png)
