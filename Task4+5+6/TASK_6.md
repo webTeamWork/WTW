@@ -8,9 +8,9 @@
 
 ​      左侧或者右侧为当前页面导航栏或者界面要素
 
-![图形用户界面, 网站  描述已自动生成](file:///C:/Users/11468/AppData/Local/Temp/msohtmlclip1/01/clip_image002.jpg)
+![图形用户界面, 网站  描述已自动生成](https://github.com/Jie-yang-1014/drawing_bed/blob/master/%E5%9B%BE%E7%89%873.png)
 
-![图形用户界面, 文本, 应用程序, 电子邮件, 网站  描述已自动生成](file:///C:/Users/11468/AppData/Local/Temp/msohtmlclip1/01/clip_image004.jpg)
+![图形用户界面, 文本, 应用程序, 电子邮件, 网站  描述已自动生成](https://github.com/Jie-yang-1014/drawing_bed/blob/master/%E5%9B%BE%E7%89%874.png)
 
 **主页布局设计：**
 
@@ -26,7 +26,7 @@
 
 四、提供站内搜索
 
-![img](file:///C:/Users/11468/AppData/Local/Temp/msohtmlclip1/01/clip_image006.png)
+![img](https://github.com/Jie-yang-1014/drawing_bed/blob/master/%E5%9B%BE%E7%89%875.png)
 
  
 
