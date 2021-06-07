@@ -6,7 +6,7 @@
 
 MVC是Model-View-Controller的缩写，它把软件系统分为Model（模型）、View（视图）和Controller（控制），实现Model和View分离的方法来组织代码，达到分层设计的目的，从而使代码解耦，便于维护和代码的复用。
 
-![图示  描述已自动生成](file:///C:/Users/11468/AppData/Local/Temp/msohtmlclip1/01/clip_image002.png)
+![图示  描述已自动生成](https://github.com/Jie-yang-1014/drawing_bed/blob/master/%E5%9B%BE%E7%89%871.png)
 
 其中：
 
@@ -58,7 +58,7 @@ Controller：“控制层”，根据用户从"视图层"输入的请求，调�
 
 我们基本思路也是三层架构的思路。
 
-![图示  描述已自动生成](file:///C:/Users/11468/AppData/Local/Temp/msohtmlclip1/01/clip_image004.png)
+![图示  描述已自动生成](https://github.com/Jie-yang-1014/drawing_bed/blob/master/%E5%9B%BE%E7%89%872.png)
 
 其中：
 
